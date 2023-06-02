@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Marks Required</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 10px;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .result {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Marks Required</h1>
+
+    <div class="form-group">
+      <label for="theory-entry">Enter your theory marks:</label>
+      <input type="text" id="theory-entry" />
+    </div>
+
+    <div class="form-group">
+      <label for="practical-entry">Enter your practical marks:</label>
+      <input type="text" id="practical-entry" />
+    </div>
+
+    <div class="form-group">
+      <label for="university-practical-entry"
+        >Enter your university practical marks:</label
+      >
+      <input type="text" id="university-practical-entry" />
+    </div>
+
+    <div class="form-group">
+      <label for="grade-entry">Enter the grade you want:</label>
+      <input type="text" id="grade-entry" />
+    </div>
+
+    <button id="calculate-button">Calculate</button>
+
+    <div class="result" id="result-label"></div>
+
+    <table id="result-table">
+      <thead>
+        <tr>
+          <th>Grade</th>
+          <th>Required Marks</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      document
+        .getElementById("calculate-button")
+        .addEventListener("click", function () {
+          var theory = parseFloat(
+            document.getElementById("theory-entry").value
+          );
+          var practical = parseFloat(
+            document.getElementById("practical-entry").value
+          );
+          var universityPractical = parseFloat(
+            document.getElementById("university-practical-entry").value
+          );
+          var grade = document.getElementById("grade-entry").value;
+
+          var currentTotal = theory + practical + universityPractical;
+
+          var grades = {
+            o: 91,
+            "a+": 81,
+            a: 71,
+            "b+": 61,
+            b: 56,
+            c: 50,
+          };
+
+          var requiredMarks = {};
+
+          for (var gradeKey in grades) {
+            var minMarks = grades[gradeKey];
+            if (currentTotal < minMarks) {
+              var needed = minMarks - currentTotal;
+              if (needed < 25) {
+                needed = (needed * 100) / 25;
+                requiredMarks[gradeKey] = needed.toFixed(2);
+              } else {
+                requiredMarks[gradeKey] = "Not Achievable";
+              }
+            } else {
+              requiredMarks[gradeKey] = "Already Achieved";
+            }
+          }
+
+          if (grade in requiredMarks) {
+            document.getElementById("result-label").innerHTML =
+              "You can get it, required: " + requiredMarks[grade];
+          } else {
+            document.getElementById("result-label").innerHTML =
+              "Bhai tere se na ho payega";
+          }
+
+          updateTable(requiredMarks);
+        });
+
+      function updateTable(requiredMarks) {
+        var tableBody = document.querySelector("#result-table tbody");
+        tableBody.innerHTML = "";
+
+        for (var gradeKey in requiredMarks) {
+          var required = requiredMarks[gradeKey];
+
+          var row = document.createElement("tr");
+          var gradeCell = document.createElement("td");
+          gradeCell.textContent = gradeKey;
+          row.appendChild(gradeCell);
+
+          var requiredCell = document.createElement("td");
+          requiredCell.textContent = required;
+          row.appendChild(requiredCell);
+
+          tableBody.appendChild(row);
+        }
+      }
+    </script>
+  </body>
+</html>
